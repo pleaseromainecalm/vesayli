@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+
+# Secrets and local config
+.env
+.env.*
+*.key
+*.pem
+.vesaylirc
+
+# macOS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Real user health data: never commit
+meds*.md
+meds*.json
+log-*.md
+one-pager*.md
+one-pager*.html
+visit-prep*.md
+refill*.md
+pack*.md
+answers*.json
