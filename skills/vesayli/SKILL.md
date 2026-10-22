@@ -1,6 +1,6 @@
 ---
 name: vesayli
-description: Teach any Muse to be a personal health-tracking companion from Day 1: zero setup, the trust contract, the non-diagnostic guardrail pattern, and readable daily and weekly output. By Please Romaine Calm.
+description: "Teach any Muse to be a personal health-tracking companion from Day 1: zero setup, the trust contract, the non-diagnostic guardrail pattern, and readable daily and weekly output. By Please Romaine Calm."
 ---
 
 # VeSayLi
