@@ -86,7 +86,7 @@ def _log_symptom(m, _t):
                 "example: log headache 6/10."), False
     if not symptom:
         symptom = "symptom"
-    return ("Logged. %s, %d out of 10." % (symptom, severity)), False
+    return ("Logged. %s, %d out of 10." % (symptom.capitalize(), severity)), False
 
 
 def _log_med(_m, _t):

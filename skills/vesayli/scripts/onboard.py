@@ -11,11 +11,18 @@ Answers file shape:
              "form": "softgel", "slot": "morning",
              "until": null, "status": "taking"}],
    "stopped": [{"what": "Elderberry", "when": "2026-10-13",
-                "why": "bottle finished"}]}
+                "why": "bottle finished"}],
+   "timings": {"morning": "before food"},
+   "training_opt_out": "done"}
 
 Fields: name, dose (as printed on the log line), count (pills per
 slot), form, slot (morning, midday or evening), until (YYYY-MM-DD or
 null), status (taking, low or out). The stopped list is optional.
+"timings" is optional: a slot name to the food timing the user gave
+for it ("before food", "after dinner"). A slot with no timing renders
+a bare header. Never fill one in. "training_opt_out" is optional:
+"done" or "skipped", the choice the user made at the opt-out step.
+Anything else is ignored, never guessed.
 
 Writes meds.json in the fill_list.py schema and log-<today>.md in the
 SKILL.md daily log shape, with unchecked boxes, the user's dose and
@@ -40,11 +47,6 @@ SLOT_TITLES = {
     "morning": "Morning",
     "midday": "Midday",
     "evening": "Evening",
-}
-SLOT_RULES = {
-    "morning": "before food",
-    "midday": "after the first meal",
-    "evening": "after dinner",
 }
 STATUS_WORDS = {
     "taking": "taking",
@@ -89,14 +91,23 @@ def render_meds_json(meds):
     return out
 
 
-def render_log(meds, stopped, today):
+def slot_title(slot, timings):
+    title = SLOT_TITLES[slot]
+    timing = (timings or {}).get(slot)
+    if isinstance(timing, str) and timing.strip():
+        return "%s: %s" % (title, timing.strip())
+    return title
+
+
+def render_log(meds, stopped, today, timings=None,
+               training_opt_out=None):
     lines = []
     lines.append("# " + today)
     lines.append("")
     lines.append("## Meds and supplements")
     lines.append("")
     for slot in SLOT_ORDER:
-        lines.append("### %s: %s" % (SLOT_TITLES[slot], SLOT_RULES[slot]))
+        lines.append("### " + slot_title(slot, timings))
         shown = False
         for m in meds:
             if str(m.get("slot") or "").lower() != slot:
@@ -116,6 +127,9 @@ def render_log(meds, stopped, today):
     lines.append("")
     lines.append("## Notes")
     lines.append("- Started with the Day-1 interview.")
+    choice = str(training_opt_out or "").strip().lower()
+    if choice in ("done", "skipped"):
+        lines.append("- Training opt-out: %s." % choice)
     lines.append("")
     lines.append("## Stopped")
     if stopped:
@@ -153,6 +167,8 @@ def main(argv):
         return 0
     meds = data["meds"]
     stopped = data.get("stopped") or []
+    timings = data.get("timings") or {}
+    training_opt_out = data.get("training_opt_out")
     today = date.today().isoformat()
     meds_path = os.path.join(args.out_dir, "meds.json")
     log_path = os.path.join(args.out_dir, "log-%s.md" % today)
@@ -161,7 +177,8 @@ def main(argv):
             json.dump(render_meds_json(meds), f, indent=2)
             f.write("\n")
         with open(log_path, "w", encoding="utf-8") as f:
-            f.write(render_log(meds, stopped, today))
+            f.write(render_log(meds, stopped, today, timings,
+                               training_opt_out))
     except OSError:
         print("Could not write the output files. Nothing was filed.")
         return 0

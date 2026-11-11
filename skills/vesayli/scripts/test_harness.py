@@ -431,7 +431,7 @@ def run():
              and set(filed["Vitamin D"]) == {
                  "name", "count", "form", "slot", "until", "status"},
              "meds.json filed in the fill_list schema"),
-            ("### Morning: before food" in log_text
+            ("### Morning" in log_text
              and "- [ ] Vitamin D 1000 IU (taking)" in log_text
              and "- [ ] Zinc 15 mg (taking, short course until 2026-10-25)"
              in log_text
@@ -439,11 +439,60 @@ def run():
              "first log in the SKILL.md shape with dose and status words"),
             ("Elderberry, stopped 2026-10-13, bottle finished" in log_text,
              "stopped item filed"),
+            ("before food" not in log_text
+             and "after dinner" not in log_text
+             and "after the first meal" not in log_text,
+             "no food timing added without asking"),
             (onboard.main(["--answers", os.path.join(tmp, "missing.json"),
                            "--out-dir", out_dir]) == 0,
              "bad answers file exits 0 with an honest message"),
         ]
         for ok, label in onboard_checks:
+            status = "PASS" if ok else "FAIL"
+            if not ok:
+                failures += 1
+            print("[%s] %s" % (status, label))
+    print("")
+    print("=== onboard: timings and opt-out, only when given ===")
+    with tempfile.TemporaryDirectory() as tmp:
+        answers2_path = os.path.join(tmp, "answers2.json")
+        with open(answers2_path, "w", encoding="utf-8") as f:
+            _json.dump({
+                "user": "Sam",
+                "meds": [
+                    {"name": "Vitamin D", "dose": "1000 IU", "count": 1,
+                     "form": "softgel", "slot": "morning",
+                     "until": None, "status": "taking"},
+                    {"name": "Vitamin C", "dose": "1000 mg", "count": 1,
+                     "form": "tablet", "slot": "evening",
+                     "until": None, "status": "low"},
+                ],
+                "timings": {"morning": "before food",
+                            "evening": "after dinner"},
+                "training_opt_out": "done",
+            }, f)
+        out_dir2 = os.path.join(tmp, "start2")
+        rc2 = onboard.main(["--answers", answers2_path,
+                            "--out-dir", out_dir2])
+        log2 = ""
+        log2_path = os.path.join(
+            out_dir2, "log-%s.md" % _vdate.today().isoformat())
+        if os.path.isfile(log2_path):
+            with open(log2_path, encoding="utf-8") as f:
+                log2 = f.read()
+        opt_checks = [
+            (rc2 == 0, "exit 0"),
+            ("### Morning: before food" in log2,
+             "given morning timing renders on the header"),
+            ("### Evening: after dinner" in log2,
+             "given evening timing renders on the header"),
+            ("### Midday" in log2
+             and "### Midday:" not in log2,
+             "slot with no timing stays bare"),
+            ("Training opt-out: done." in log2,
+             "opt-out choice logged"),
+        ]
+        for ok, label in opt_checks:
             status = "PASS" if ok else "FAIL"
             if not ok:
                 failures += 1

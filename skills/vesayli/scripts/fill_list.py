@@ -29,11 +29,6 @@ import sys
 from datetime import date, timedelta
 
 SLOT_ORDER = ["morning", "midday", "evening"]
-SLOT_RULES = {
-    "morning": "before food",
-    "midday": "after the first meal",
-    "evening": "after dinner",
-}
 SLOT_TITLES = {
     "morning": "Morning",
     "midday": "Midday",
@@ -103,7 +98,7 @@ def render_fill(meds, week_start):
     lines.append("")
 
     for slot in SLOT_ORDER:
-        lines.append("## %s: %s" % (SLOT_TITLES[slot], SLOT_RULES[slot]))
+        lines.append("## %s" % SLOT_TITLES[slot])
         lines.append("")
         shown = False
         for item in meds:

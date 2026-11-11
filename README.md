@@ -14,6 +14,16 @@ npx skills add pleaseromainecalm/vesayli --skill vesayli
 
 The CLI finds `skills/vesayli/SKILL.md` and installs it into your agent. Works with any agent that reads the open SKILL.md standard (Claude Code, Cursor, and the rest). Or copy the `skills/vesayli/` folder into your agent's skills directory by hand.
 
+No terminal? Paste this into your Muse instead:
+
+> Install the VeSayLi skill from github.com/pleaseromainecalm/vesayli and walk me through the first setup.
+
+Your Muse handles the install, then opens with the trust contract, the short interview, and today's log.
+
+## Start it
+
+There is no button and no settings screen. Once installed, say "VeSayLi" to your agent, or just ask it to track your meds. The companion opens with the trust contract, then the training opt-out step, a short interview, and today's log.
+
 ## What it does
 
 - **Day-1 interview.** The first conversation is the setup: meds, timing, today's log. No intake form.

@@ -1,5 +1,5 @@
 name: "vesayli"
 title: "VeSayLi"
-description: "Teach any Muse to be a personal health-tracking companion from Day 1: zero setup, the trust contract, the non-diagnostic guardrail pattern, and readable daily and weekly output. By Please Romaine Calm."
+description: "Teach any Muse to be a personal health-tracking companion from Day 1: zero setup, the trust contract, the non-diagnostic guardrail pattern, and readable daily and weekly output. By Please Romaine Calm. Use when the user says VeSayLi, or asks to track meds, symptoms, or a daily health log, or to prepare for a doctor visit."
 category: "Health and fitness"
 include_in_prompt: true

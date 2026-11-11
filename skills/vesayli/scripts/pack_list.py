@@ -76,9 +76,7 @@ def render_pack(meds, start, days, spare):
 
     resting = []
     for slot in fill_list.SLOT_ORDER:
-        lines.append("## %s: %s"
-                     % (fill_list.SLOT_TITLES[slot],
-                        fill_list.SLOT_RULES[slot]))
+        lines.append("## %s" % fill_list.SLOT_TITLES[slot])
         lines.append("")
         shown = False
         for item in meds:
